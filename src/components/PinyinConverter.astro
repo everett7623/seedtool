@@ -1,0 +1,35 @@
+<script>
+  import ctpinyin from '../lib/ctpinyin.js';
+  let input = "";
+  let output = "";
+
+  const options = {
+    checkPolyphone: false,
+    charcase: 'lower',
+    firstUpCase: false,
+    connection: ' '
+  };
+
+  function toPinyin(text) {
+    if (!text) return "";
+    const py = new ctpinyin(options);
+    return py.getPinyin(text);
+  }
+</script>
+
+<div>
+  <label>请输入中文文本：</label>
+  <textarea class="textarea" bind:value={input} placeholder="例如：实用工具"></textarea>
+  <div class="input-info">字符数：{input.length}</div>
+
+  <div class="button-grid">
+    <button class="btn btn-primary" on:click={() => output = toPinyin(input)}>转换为拼音</button>
+    <button class="btn btn-warning" on:click={() => navigator.clipboard.writeText(output)}>复制结果</button>
+    <button class="btn btn-danger" on:click={() => { input = ''; output = ''; }}>清空</button>
+  </div>
+
+  <label>拼音结果：</label>
+  <textarea class="output-textarea" readonly>{output}</textarea>
+</div>
+
+<!-- 📁 src/lib/ctpinyin.js 应包含现有 pinyin 函数定义及 char_dict 数据 -->

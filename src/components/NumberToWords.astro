@@ -1,0 +1,51 @@
+<script>
+  let input = "";
+  let result = "";
+
+  function numberToWords(n) {
+    const belowTwenty = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+    const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+    const thousands = ["", "Thousand", "Million", "Billion"];
+
+    if (n === "" || isNaN(Number(n))) return "Invalid input";
+
+    const num = parseInt(n);
+    if (num === 0) return belowTwenty[0];
+
+    let word = "";
+
+    function helper(num) {
+      if (num < 20) return belowTwenty[num];
+      if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 !== 0 ? " " + belowTwenty[num % 10] : "");
+      return belowTwenty[Math.floor(num / 100)] + " Hundred" + (num % 100 !== 0 ? " " + helper(num % 100) : "");
+    }
+
+    let i = 0;
+    let currentNum = num;
+    while (currentNum > 0) {
+      const rem = currentNum % 1000;
+      if (rem !== 0) {
+        word = helper(rem) + (thousands[i] ? " " + thousands[i] : "") + (word ? " " + word : "");
+      }
+      currentNum = Math.floor(currentNum / 1000);
+      i++;
+    }
+
+    return word.trim();
+  }
+</script>
+
+<div>
+  <label>请输入数字：</label>
+  <input class="input-field" type="text" placeholder="例如：123456" bind:value={input} />
+  <div class="input-info">字符数：{input.length}</div>
+
+  <div class="button-grid">
+    <button class="btn btn-primary" on:click={() => result = numberToWords(input)}>转换为英文</button>
+    <button class="btn btn-warning" on:click={() => navigator.clipboard.writeText(result)}>复制结果</button>
+    <button class="btn btn-danger" on:click={() => { input = ''; result = ''; }}>清空</button>
+  </div>
+
+  <label>转换结果：</label>
+  <textarea class="output-textarea" readonly>{result}</textarea>
+</div>

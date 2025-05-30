@@ -1,0 +1,33 @@
+<script>
+  let inputText = "";
+  let outputText = "";
+
+  const convert = (mode) => {
+    const converters = {
+      upper: t => t.toUpperCase(),
+      lower: t => t.toLowerCase(),
+      capitalize: t => t.replace(/\b\w/g, c => c.toUpperCase()),
+      sentence: t => t.toLowerCase().replace(/(^|[.!?]\s+)\w/g, c => c.toUpperCase()),
+      trim: t => t.trim()
+    };
+    outputText = converters[mode] ? converters[mode](inputText) : inputText;
+  }
+</script>
+
+<div>
+  <textarea class="textarea" placeholder="请输入文本" bind:value={inputText}></textarea>
+  <div class="input-info">字符数：{inputText.length}</div>
+
+  <div class="button-grid">
+    <button class="btn btn-primary" on:click={() => convert('upper')}>大写</button>
+    <button class="btn btn-primary" on:click={() => convert('lower')}>小写</button>
+    <button class="btn btn-primary" on:click={() => convert('capitalize')}>每词首字母大写</button>
+    <button class="btn btn-primary" on:click={() => convert('sentence')}>句首大写</button>
+    <button class="btn btn-warning" on:click={() => navigator.clipboard.writeText(outputText)}>复制结果</button>
+    <button class="btn btn-danger" on:click={() => { inputText = ''; outputText = ''; }}>清空</button>
+  </div>
+
+  <label>转换结果：</label>
+  <textarea class="output-textarea" readonly>{outputText}</textarea>
+  <div class="input-info">结果字符数：{outputText.length}</div>
+</div>

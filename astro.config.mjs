@@ -1,3 +1,6 @@
+---
+// astro.config.mjs
+---
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
@@ -39,3 +42,11 @@ export default defineConfig({
 // src/lib/ctpinyin.js
 ---
 /* 请将你当前的 ctpinyin.js 中完整逻辑粘贴至此文件路径，以供 PinyinConverter 调用 */
+
+---
+// public/scripts/tools.js
+---
+/* 拷贝自原 script.js，整合五个工具逻辑 */
+/* 已适配 Astro 模块加载，可复用于多个组件页面逻辑调用 */
+
+" + ${60}.raw_content + "

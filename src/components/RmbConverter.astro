@@ -1,0 +1,68 @@
+<script>
+  let digits = "";
+  let result = "";
+
+  function convertCurrency(input) {
+    const cnNums = ["零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"];
+    const cnIntRadice = ["", "拾", "佰", "仟"];
+    const cnIntUnits = ["", "万", "亿", "兆"];
+    const cnDecUnits = ["角", "分"];
+    const cnInteger = "整";
+    const cnIntLast = "元";
+    const maxNum = 999999999999999.99;
+
+    input = input.toString().replace(/,/g, "").replace(/^0+/, "");
+    if (input === "" || isNaN(Number(input)) || Number(input) > maxNum) return "";
+
+    let [integerNum, decimalNum] = input.split(".");
+    decimalNum = decimalNum ? decimalNum.substr(0, 2) : "";
+
+    let chineseStr = "";
+    if (parseInt(integerNum, 10) > 0) {
+      let zeroCount = 0;
+      for (let i = 0; i < integerNum.length; i++) {
+        const n = integerNum.charAt(i);
+        const p = integerNum.length - i - 1;
+        const q = Math.floor(p / 4);
+        const m = p % 4;
+
+        if (n === "0") {
+          zeroCount++;
+        } else {
+          if (zeroCount > 0) chineseStr += cnNums[0];
+          zeroCount = 0;
+          chineseStr += cnNums[Number(n)] + cnIntRadice[m];
+        }
+        if (m === 0 && zeroCount < 4) chineseStr += cnIntUnits[q];
+      }
+      chineseStr += cnIntLast;
+    }
+    if (decimalNum !== "") {
+      for (let i = 0; i < decimalNum.length; i++) {
+        const n = decimalNum.charAt(i);
+        if (n !== "0") chineseStr += cnNums[Number(n)] + cnDecUnits[i];
+      }
+    }
+    if (chineseStr === "") chineseStr = cnNums[0] + cnIntLast;
+    if (decimalNum === "") chineseStr += cnInteger;
+    return "人民币" + chineseStr;
+  }
+</script>
+
+<div>
+  <label>小写金额：</label>
+  <input type="text" bind:value={digits} placeholder="例如：1888.88" class="input-field" />
+
+  <div class="input-info">
+    输入字符数：{digits.length}
+  </div>
+
+  <label>大写金额：</label>
+  <input type="text" value={result} readonly class="output-textarea" />
+
+  <div class="button-grid">
+    <button class="btn btn-primary" on:click={() => result = convertCurrency(digits)}>转为人民币大写</button>
+    <button class="btn btn-warning" on:click={() => navigator.clipboard.writeText(result)}>复制结果</button>
+    <button class="btn btn-danger" on:click={() => { digits = ''; result = ''; }}>清空</button>
+  </div>
+</div>

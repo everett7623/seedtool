@@ -1,0 +1,49 @@
+<script>
+  let source = "";
+  let converted = "";
+  let log = "";
+
+  function convertToUnicodeEscapes() {
+    converted = "";
+    log = "";
+    for (let i = 0; i < source.length; i++) {
+      const char = source.charAt(i);
+      const code = char.charCodeAt(0);
+      if (code > 127) {
+        const hex = code.toString(16).padStart(4, '0');
+        converted += `\\u${hex}`;
+        log += `${char} => \\u${hex}\n`;
+      } else {
+        converted += char;
+      }
+    }
+  }
+
+  function clearAll() {
+    source = "";
+    converted = "";
+    log = "";
+  }
+</script>
+
+<div>
+  <label>原始内容：</label>
+  <textarea class="textarea" placeholder="请输入带特殊字符的文本" bind:value={source}></textarea>
+  <div class="input-info">原始字符数：{source.length}</div>
+
+  <div class="button-grid">
+    <button class="btn btn-primary" on:click={convertToUnicodeEscapes}>转换为 Unicode</button>
+    <button class="btn btn-warning" on:click={() => navigator.clipboard.writeText(converted)}>复制结果</button>
+    <button class="btn btn-danger" on:click={clearAll}>清空</button>
+  </div>
+
+  <label>转换结果：</label>
+  <textarea class="output-textarea" readonly>{converted}</textarea>
+
+  {log && (
+    <div class="tips">
+      <h4>转换记录</h4>
+      <pre style="white-space: pre-wrap; font-size: 0.85rem; color: #555;">{log}</pre>
+    </div>
+  )}
+</div>
